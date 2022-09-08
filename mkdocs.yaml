@@ -1,0 +1,7 @@
+site_name: Architecture Specs
+site_url: https://archspecs.com/
+repo_url: https://github.com/venugosv/engineering
+
+nav:
+    - Home: index.md
+    - Increments: increments.md
