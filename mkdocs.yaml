@@ -1,8 +1,17 @@
 site_name: Architecture Specs
 site_url: https://archspecs.com/
-repo_url: https://github.com/venugosv/engineering
+repo_url: https://github.com/venugosv/architecture
 nav:
     - Home: index.md
-    - Increments: increments.md
+    - Increments:
+      - DCVV2 In-House: 042 - DCVV2 In-house.md
 theme:
-    name: readthedocs
+    name: material
+markdown_extensions:
+    - toc:
+        permalink: "#"
+        baselevel: 2
+        separator: "_"
+    - plantuml_markdown:
+plugins:
+  - search
