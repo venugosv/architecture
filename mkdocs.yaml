@@ -15,3 +15,4 @@ markdown_extensions:
     - plantuml_markdown:
 plugins:
   - search
+  - techdocs-core
