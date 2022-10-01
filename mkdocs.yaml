@@ -4,7 +4,7 @@ repo_url: https://github.com/venugosv/architecture
 nav:
     - Home: index.md
     - Increments:
-      - DCVV2 In-House: 042 - DCVV2 In-house.md
+      - DCVV2 In-House: DCVV2.md
 theme:
     name: material
 markdown_extensions:
