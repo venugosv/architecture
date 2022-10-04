@@ -161,3 +161,5 @@ A dynamic CVV is a time bound card verification value that is valid only for a s
         end
         acquirer --> merchant : Authorisation result
         merchant --> customer : Purchase result
+        ::end-uml::
+        
