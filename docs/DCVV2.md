@@ -7,97 +7,96 @@ A dynamic CVV is a time bound card verification value that is valid only for a s
 ![Solution Overview](img/DCVV2 Inhouse SO.png)
 
 ##Behavioural Models
+
 !!! info "Three Phases"
 
     === "Phase 1"
 
-    ::uml:: format="png" classes="uml myDiagram" alt="My super diagram placeholder" title="My super diagram" width="1500px" height="1500px"
-    actor "ANZ Card Holder" as customer
-    participant "eCom Merchant" as merchant
-    participant "Acquirer" as acquirer
-    participant "EFTPOS" as eftpos
-    participant "VISA" as visa
-    participant "ANZ Channel" as app
-    participant "BFF" as bff
-    participant "Base 24" as bswitch
-    participant "Payshield HSM" as hsm
-    participant "CTM" as ctm
+      ::uml:: format="png" classes="uml myDiagram" alt="My super diagram placeholder" title="My super diagram" width="1500px" height="1500px"
+      actor "ANZ Card Holder" as customer
+      participant "eCom Merchant" as merchant
+      participant "Acquirer" as acquirer
+      participant "EFTPOS" as eftpos
+      participant "VISA" as visa
+      participant "ANZ Channel" as app
+      participant "BFF" as bff
+      participant "Base 24" as bswitch
+      participant "Payshield HSM" as hsm
+      participant "CTM" as ctm
 
-    customer -> app : Show me a dynamic CVV
-    app -> bff : Get a dynamic CVV
-    customer -> app : Show me a dynamic CVV
-    app -> bff : Get a dynamic CVV
-    bff -> visa : Get dynamic CVV for the card & expiry
-    visa --> bff : Dynamic CVV
-    bff --> app : Dynamic CVV
-    app --> customer : Dynamic CVV
-    customer -> merchant : Purchase what i like
-    merchant -> acquirer : Authorise transaction
-    acquirer -> acquirer : LCR choice
-    acquirer -> eftpos : Authorise transaction
-    eftpos -> bswitch : Authorise transaction
-    bswitch -> hsm : Verify CVV2\n"Command = 'CY'"
-    hsm --> bswitch : Verification result
-    group#Gold #LightGreen Change Needed
-    alt if Failed
-    bswitch -> hsm : Verify dynamic CVV2\nCommand = 'PM' with\nScheme ID = 5\nVersion = 0\ncurrent time and TWU
-    hsm --> bswitch : Verification result
-    alt if Failed
-    bswitch -> hsm : Verify dynamic CVV2\nCommand = 'PM'with\nScheme ID = 5\nVersion = 0\ntime minus TWU and TWU"
-    hsm --> bswitch : Verfication result
-    end
-    end
-    end
-    bswitch -> ctm : Authorise transaction
-    ctm --> bswitch : Authorisation result
-    bswitch --> eftpos : Authorisation result
-    eftpos --> acquirer : Authorisation result
-    acquirer --> merchant : Authorisation result
-    merchant --> customer : Purchase result
-    ::end-uml::
+      customer -> app : Show me a dynamic CVV
+      app -> bff : Get a dynamic CVV
+      customer -> app : Show me a dynamic CVV
+      app -> bff : Get a dynamic CVV
+      bff -> visa : Get dynamic CVV for the card & expiry
+      visa --> bff : Dynamic CVV
+      bff --> app : Dynamic CVV
+      app --> customer : Dynamic CVV
+      customer -> merchant : Purchase what i like
+      merchant -> acquirer : Authorise transaction
+      acquirer -> acquirer : LCR choice
+      acquirer -> eftpos : Authorise transaction
+      eftpos -> bswitch : Authorise transaction
+      bswitch -> hsm : Verify CVV2\n"Command = 'CY'"
+      hsm --> bswitch : Verification result
+      group#Gold #LightGreen Change Needed
+      alt if Failed
+      bswitch -> hsm : Verify dynamic CVV2\nCommand = 'PM' with\nScheme ID = 5\nVersion = 0\ncurrent time and TWU
+      hsm --> bswitch : Verification result
+      alt if Failed
+      bswitch -> hsm : Verify dynamic CVV2\nCommand = 'PM'with\nScheme ID = 5\nVersion = 0\ntime minus TWU and TWU"
+      hsm --> bswitch : Verfication result
+      end
+      end
+      end
+      bswitch -> ctm : Authorise transaction
+      ctm --> bswitch : Authorisation result
+      bswitch --> eftpos : Authorisation result
+      eftpos --> acquirer : Authorisation result
+      acquirer --> merchant : Authorisation result
+      merchant --> customer : Purchase result
+      ::end-uml::
 
     === "Phase 2"
 
-    ::uml::format="png" classes="uml myDiagram" alt="My super diagram placeholder" title="My super diagram" width="1500px" height="1500px"
-    actor "ANZ Card Holder" as customer
-    participant "eCom Merchant" as merchant
-    participant "Acquirer" as acquirer
-    participant "EFTPOS" as eftpos
-    participant "VISA" as visa
-    participant "ANZ Channel" as app
-    participant "BFF" as bff
-    participant "Authentic" as aswitch
-    participant "Payshield HSM" as hsm
-    participant "CTM" as ctm
+      ::uml::format="png" classes="uml myDiagram" alt="My super diagram placeholder" title="My super diagram" width="1500px" height="1500px"
+      actor "ANZ Card Holder" as customer
+      participant "eCom Merchant" as merchant
+      participant "Acquirer" as acquirer
+      participant "EFTPOS" as eftpos
+      participant "VISA" as visa
+      participant "ANZ Channel" as app
+      participant "BFF" as bff
+      participant "Authentic" as aswitch
+      participant "Payshield HSM" as hsm
+      participant "CTM" as ctm
 
-    customer -> app : Show me a dynamic CVV
-    app -> bff : Get a dynamic CVV
-    bff -> visa : Get dynamic CVV for the card & expiry & TWU
-    visa --> bff : Dynamic CVV
-    bff --> app : Dynamic CVV
-    app --> customer : Dynamic CVV
-    customer -> merchant : Purchase what i like
-    merchant -> acquirer : Authorise transaction
-    acquirer -> visa : Authorise transaction
-    visa -> aswitch : Authorise transaction
-    aswitch -> hsm : Verify CVV2\n"Command = 'CY'"
-    hsm --> aswitch : Verification result
-    group#Gold #LightGreen Change Needed
-    alt if Failed
-    aswitch -> hsm : Verify dynamic CVV2\nCommand = 'PM' with\nScheme ID = 5\nVersion = 0\ncurrent time and TWU
-    hsm --> aswitch : Verification result
-    alt if Failed
-    aswitch -> hsm : Verify dynamic CVV2\nCommand = 'PM' with\nScheme ID = 5\nVersion = 0\ntime minus TWU and TWU
-    hsm --> aswitch : Verfication result
-    end
-    end
-    end
-    aswitch -> ctm : Authorise transaction
-    ctm --> aswitch : Authorisation result
-    aswitch --> visa : Authorisation result
-    visa --> acquirer : Authorisation result
-    acquirer --> merchant : Authorisation result
-    merchant --> customer : Purchase result
-    ::end-uml::
-
-    
+      customer -> app : Show me a dynamic CVV
+      app -> bff : Get a dynamic CVV
+      bff -> visa : Get dynamic CVV for the card & expiry & TWU
+      visa --> bff : Dynamic CVV
+      bff --> app : Dynamic CVV
+      app --> customer : Dynamic CVV
+      customer -> merchant : Purchase what i like
+      merchant -> acquirer : Authorise transaction
+      acquirer -> visa : Authorise transaction
+      visa -> aswitch : Authorise transaction
+      aswitch -> hsm : Verify CVV2\n"Command = 'CY'"
+      hsm --> aswitch : Verification result
+      group#Gold #LightGreen Change Needed
+      alt if Failed
+      aswitch -> hsm : Verify dynamic CVV2\nCommand = 'PM' with\nScheme ID = 5\nVersion = 0\ncurrent time and TWU
+      hsm --> aswitch : Verification result
+      alt if Failed
+      aswitch -> hsm : Verify dynamic CVV2\nCommand = 'PM' with\nScheme ID = 5\nVersion = 0\ntime minus TWU and TWU
+      hsm --> aswitch : Verfication result
+      end
+      end
+      end
+      aswitch -> ctm : Authorise transaction
+      ctm --> aswitch : Authorisation result
+      aswitch --> visa : Authorisation result
+      visa --> acquirer : Authorisation result
+      acquirer --> merchant : Authorisation result
+      merchant --> customer : Purchase result
+      ::end-uml::
