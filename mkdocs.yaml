@@ -6,7 +6,7 @@ nav:
     - Solution Architecture & Design:
       - fabric:
           -Architectural Increments:
-            - DCVV2 In-House: DCVV2.md
+            - 042 - DCVV2 In-House: DCVV2.md
 theme:
     name: material
 markdown_extensions:
