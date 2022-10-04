@@ -10,7 +10,7 @@ A dynamic CVV is a time bound card verification value that is valid only for a s
 
 !!! info "Three Phases"
 
-    === "Phase 1"
+    === "Phase 1 (dCVV2 verify for EFTPOS)"
 
         ::uml:: format="png" classes="uml myDiagram" alt="My super diagram placeholder" title="My super diagram" width="1500px" height="1500px"
         actor "ANZ Card Holder" as customer
@@ -57,7 +57,7 @@ A dynamic CVV is a time bound card verification value that is valid only for a s
         merchant --> customer : Purchase result
         ::end-uml::
 
-    === "Phase 2"
+    === "Phase 2 (dCVV2 verify for Visa)"
 
         ::uml::format="png" classes="uml myDiagram" alt="My super diagram placeholder" title="My super diagram" width="1500px" height="1500px"
         actor "ANZ Card Holder" as customer
@@ -100,3 +100,64 @@ A dynamic CVV is a time bound card verification value that is valid only for a s
         acquirer --> merchant : Authorisation result
         merchant --> customer : Purchase result
         ::end-uml::
+
+    === "Phase 3 (dCVV2 generate locally)"
+
+        ::uml::format="png" classes="uml myDiagram" alt="My super diagram placeholder" title="My super diagram" width="1500px" height="1500px"
+        actor "ANZ Card Holder" as customer
+        participant "eCom Merchant" as merchant
+        participant "Acquirer" as acquirer
+        participant "EFTPOS" as eftpos
+        participant "VISA" as visa
+        participant "ANZ Channel" as app
+        participant "BFF" as bff
+        participant "API Mesh" as apim
+        participant "Authentic" as aswitch
+        participant "Payshield HSM" as hsm
+        participant "CTM" as ctm
+
+        customer -> app : Show me a dynamic CVV
+        app -> bff : Get a dynamic CVV
+        group#Gold #LightGreen Change Needed
+        bff -> apim : Get a dynamic CVV
+        apim -> aswitch : Get dynamic CVV for the card & expiry & TWU
+        aswitch -> hsm : Generate a dynamic CVV\n"Command = 'QY'\nScheme ID = 5"
+        hsm --> aswitch : Dynamic CVV
+        aswitch --> apim : Dynamic CVV
+        apim --> bff : Dynamic CVV
+        end
+        bff --> app : Dynamic CVV
+        app --> customer : Dynamic CVV
+        customer -> merchant : Purchase what i like
+        merchant -> acquirer : Authorise transaction
+        acquirer -> acquirer : LCR choice
+        alt if EFTPOS
+        acquirer -> eftpos : Authorise transaction
+        eftpos -> aswitch : Authorise transaction
+        end
+        alt if Visa
+        acquirer -> visa : Authorise transaction
+        visa -> aswitch : Authorise transaction
+        end
+        aswitch -> hsm : Verify CVV2\n"Command = 'CY'"
+        hsm --> aswitch : Verification result
+        alt if Failed
+        aswitch -> hsm : Verify dynamic CVV2\nCommand = 'PM' with\nScheme ID = 5\nVersion = 0\ncurrent time and TWU
+        hsm --> aswitch : Verification result
+        alt if Failed
+        aswitch -> hsm : Verify dynamic CVV2\nCommand = 'PM' with\nScheme ID = 5\nVersion = 0\ntime minus TWU and TWU
+        hsm --> aswitch : Verfication result
+        end
+        end
+        aswitch -> ctm : Authorise transaction
+        ctm --> aswitch : Authorisation result
+        alt if EFTPOS
+        aswitch --> eftpos : Authorisation result
+        eftpos --> acquirer : Authorisation result
+        end
+        alt if Visa
+        aswitch --> visa : Authorisation result
+        visa --> acquirer : Authorisation result
+        end
+        acquirer --> merchant : Authorisation result
+        merchant --> customer : Purchase result
