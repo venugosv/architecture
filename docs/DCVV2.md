@@ -4,7 +4,7 @@ Initial requirement of displaying the CVV2 in the app to enable customers to per
 A dynamic CVV is a time bound card verification value that is valid only for a specific period of time. So, the generation and verification of it needs to consider a specific time window while using the CVV generation algorithm. ANZ switch (Base24 & Authentic) uses Thales PayShield 10K HSM for all types of CVV generation and verification and the product in its latest versions provides support of the dynamic cvv generation and verification. Although this could be leveraged the switch software needs to impement specific logic to stitch the different HSM commands to enable successful transaction authorisation for all online purchases regardless of how it is routed to the switch and what CVV2 the customer uses during purchase.
 
 #Solution Overview
-![Solution Overview](img/DCVV2 Inhouse SO.png)
+![Solution Overview](img/so.png)
 
 ##Behavioural Models
 
@@ -162,4 +162,3 @@ A dynamic CVV is a time bound card verification value that is valid only for a s
         acquirer --> merchant : Authorisation result
         merchant --> customer : Purchase result
         ::end-uml::
-        
